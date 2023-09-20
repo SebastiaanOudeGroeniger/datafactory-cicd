@@ -20,7 +20,7 @@ jobs:
       - id: get_env
         run: |
           if [[ '${{ github.head_ref || github.ref_name }}' == 'main' ]]; then
-            echo "env=Prod" >> $GITHUB_OUTPUT
+            echo "env=prod" >> $GITHUB_OUTPUT
           else
             echo "env=Unspecified" >> $GITHUB_OUTPUT
           fi
@@ -28,7 +28,7 @@ jobs:
   deployment:
     runs-on: ubuntu-latest
     needs: [init] 
-    environment: "Prod"
+    environment: "${{needs.init.outputs.environment}}"
     steps:
     - name: Pre-run | Checkout repository
       uses: actions/checkout@v3
