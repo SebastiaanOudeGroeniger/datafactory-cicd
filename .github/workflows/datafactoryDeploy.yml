@@ -31,13 +31,13 @@ jobs:
     - name: Pre-run | Validate datafactory artifacts
       uses: Azure/data-factory-validate-action@v1.1.5
       with:
-        path: './datafactory'
+        id: /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/datafactory-cicd/providers/Microsoft.DataFactory/factories/datafactory-cicd-seb
 
     - name: Export Azure Data Factory
       id: export
       uses: Azure/data-factory-export-action@v1.2.0
       with:
-        path: './datafactory'
+        id: /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/datafactory-cicd/providers/Microsoft.DataFactory/factories/datafactory-cicd-seb
 
     - name: Publish ARM template
       uses: actions/upload-artifact@v2
@@ -85,7 +85,7 @@ jobs:
           # Older version is necessary for the deploy task to work
           curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - &&\
           sudo apt-get install -y nodejs
-          
+
     - name: Download ARM template
       id: download
       uses: actions/download-artifact@v3
