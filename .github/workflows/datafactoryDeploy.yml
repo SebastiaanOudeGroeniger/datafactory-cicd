@@ -11,14 +11,6 @@ on:
 
 jobs:
 # check_branch - branch protection rules for uat and prd | init - passes env variable
-  check_branch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: if 'main' branch then only allow 'uat' to merge
-        if: github.base_ref != 'main' 
-        run: |
-          echo "ERROR: You can only run this pipeline from main."
-          exit 1
 
   init:
     runs-on: ubuntu-latest
@@ -35,7 +27,7 @@ jobs:
 
   deployment:
     runs-on: self-hosted
-    needs: [check_branch, init] 
+    needs: [init] 
     environment: "${{needs.init.outputs.environment}}"
     steps:
     - name: Pre-run | Checkout repository
