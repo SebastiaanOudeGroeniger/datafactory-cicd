@@ -31,7 +31,8 @@ jobs:
 
     - name: Pre-run | Install Node.js on self-hosted runner
       run: |
-        sudo chmod -R 777 datafactory/
+        sudo chmod -R 777 /github/workspace/datafactory
+        sudo chmod -R 777 /github/workspace/datafactory/*
 
     - name: Pre-run | Validate datafactory artifacts
       uses: Azure/data-factory-validate-action@v1.1.5
