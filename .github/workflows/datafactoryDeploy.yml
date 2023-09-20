@@ -29,16 +29,18 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Pre-run | Install Node.js on self-hosted runner
-      run: |
-        sudo chmod -R 777 /github/workspace/datafactory
-        sudo chmod -R 777 /github/workspace/datafactory/*
+
 
     - name: Pre-run | Validate datafactory artifacts
       uses: Azure/data-factory-validate-action@v1.1.5
       with:
        path: datafactory/
-
+    
+    - name: Pre-run | Install Node.js on self-hosted runner
+      run: |
+         sudo chmod -R 777 /github/workspace/datafactory
+         sudo chmod -R 777 /github/workspace/datafactory/*
+         
     - name: Export Azure Data Factory
       id: export
       uses: Azure/data-factory-export-action@v1.0.2
