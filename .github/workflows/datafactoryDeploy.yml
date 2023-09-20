@@ -20,7 +20,7 @@ jobs:
       - id: get_env
         run: |
           if [[ '${{ github.head_ref || github.ref_name }}' == 'main' ]]; then
-            echo "env=Production" >> $GITHUB_OUTPUT
+            echo "env=Prod" >> $GITHUB_OUTPUT
           else
             echo "env=Unspecified" >> $GITHUB_OUTPUT
           fi
