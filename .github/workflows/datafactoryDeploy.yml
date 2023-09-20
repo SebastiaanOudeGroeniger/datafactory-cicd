@@ -89,9 +89,37 @@ jobs:
         dataFactoryName: datafactory-cicd-seb
         resourceGroupName: datafactory-cicd
         armTemplateFile: "${{steps.download.outputs.download-path}}/ARMTemplateForFactory.json"
+
+  deployProd:
+    runs-on: ubuntu-latest
+    needs: [init, build, deploy] 
+    environment: "Production"
+    steps:
+    - name: Pre-run | Checkout repository
+      uses: actions/checkout@v2
         
-    #- name: Post-run | Enable triggers in workspace
-    #  shell: pwsh
-    #  run: |
-    #    .\scripts\datafactory\modifyTriggers.ps1 -WorkspaceName datafactory-cicd-seb -action enable
-    #  if: always()
+        
+    - name: Download ARM template
+      id: download
+      uses: actions/download-artifact@v3
+      with:
+        name: adf-armtemplate
+        
+    - name: Pre-run | Azure login
+      uses: Azure/login@v1
+      with:
+        creds: '{
+                 "clientId":"${{ secrets.AZURE_PRD_CLIENT_ID }}",
+                 "clientSecret":"${{ secrets.AZURE_SP_SECRET }}",
+                 "subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+                  "tenantId":"${{ secrets.AZURE_TENANT_ID }}"
+                }'
+        enable-AzPSSession: true 
+        
+    - name: Datafactory workspace deployment
+      uses: Azure/data-factory-deploy-action@v1.2.0
+      with:
+        dataFactoryName: datafactory-cicd-seb
+        resourceGroupName: datafactory-cicd
+        armTemplateFile: "${{steps.download.outputs.download-path}}/ARMTemplateForFactory.json"
+                
