@@ -36,7 +36,7 @@ jobs:
       with:
        path: datafactory/
     
-    - name: Pre-run | Install Node.js on self-hosted runner
+    - name: Pre-run | Change permissions on datafactory folder
       run: |
          sudo chmod -R 777  datafactory
 
@@ -64,34 +64,7 @@ jobs:
     steps:
     - name: Pre-run | Checkout repository
       uses: actions/checkout@v2
-  
-    - name: Pre-run | Install Azure CLI on self-hosted runner
-      run: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-  
-    - name: Pre-run | Install PowerShell on self-hosted runner
-      run: |
-            # Update the list of packages
-            sudo apt-get update
-            # Install pre-requisite packages.
-            sudo apt-get install -y wget apt-transport-https software-properties-common
-            # Download the Microsoft repository GPG keys
-            wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
-            # Register the Microsoft repository GPG keys
-            sudo dpkg -i packages-microsoft-prod.deb
-            # Delete the the Microsoft repository GPG keys file
-            rm packages-microsoft-prod.deb
-            # Update the list of packages after we added packages.microsoft.com
-            sudo apt-get update
-            # Install PowerShell
-            sudo apt-get install -y powershell
-            # Install Az PowerShell module
-            pwsh -Command "Install-Module -Name Az -Repository PSGallery -Force"
-  
-    - name: Pre-run | Install Node.js on self-hosted runner
-      run: |
-          # Older version is necessary for the deploy task to work
-          curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - &&\
-          sudo apt-get install -y nodejs
+
 
     - name: Download ARM template
       id: download
@@ -116,9 +89,37 @@ jobs:
         dataFactoryName: datafactory-cicd-seb
         resourceGroupName: datafactory-cicd
         armTemplateFile: "${{steps.download.outputs.download-path}}/ARMTemplateForFactory.json"
+
+  deployProd:
+    runs-on: ubuntu-latest
+    needs: [init, build, deploy] 
+    environment: "Production"
+    steps:
+    - name: Pre-run | Checkout repository
+      uses: actions/checkout@v2
         
-    #- name: Post-run | Enable triggers in workspace
-    #  shell: pwsh
-    #  run: |
-    #    .\scripts\datafactory\modifyTriggers.ps1 -WorkspaceName datafactory-cicd-seb -action enable
-    #  if: always()
+        
+    - name: Download ARM template
+      id: download
+      uses: actions/download-artifact@v3
+      with:
+        name: adf-armtemplate
+        
+    - name: Pre-run | Azure login
+      uses: Azure/login@v1
+      with:
+        creds: '{
+                 "clientId":"${{ secrets.AZURE_PRD_CLIENT_ID }}",
+                 "clientSecret":"${{ secrets.AZURE_SP_SECRET }}",
+                 "subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+                  "tenantId":"${{ secrets.AZURE_TENANT_ID }}"
+                }'
+        enable-AzPSSession: true 
+        
+    - name: Datafactory workspace deployment
+      uses: Azure/data-factory-deploy-action@v1.2.0
+      with:
+        dataFactoryName: datafactory-cicd-seb
+        resourceGroupName: datafactory-cicd
+        armTemplateFile: "${{steps.download.outputs.download-path}}/ARMTemplateForFactory.json"
+                
