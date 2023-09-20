@@ -119,7 +119,7 @@ jobs:
     - name: Datafactory workspace deployment
       uses: Azure/data-factory-deploy-action@v1.2.0
       with:
-        dataFactoryName: datafactory-cicd-seb
+        dataFactoryName: datafactory-cicd-seb-prd
         resourceGroupName: datafactory-cicd
         armTemplateFile: "${{steps.download.outputs.download-path}}/ARMTemplateForFactory.json"
                 
