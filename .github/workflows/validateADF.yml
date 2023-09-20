@@ -13,4 +13,4 @@ jobs:
       - name: Validate Data Factory resources
         uses: Azure/data-factory-validate-action@v1.1.5
         with:
-          id: /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/datafactory-cicd/providers/Microsoft.DataFactory/factories/datafactory-cicd-seb
+          path: '/datafactory'
