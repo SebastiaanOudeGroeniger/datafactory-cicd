@@ -68,3 +68,25 @@ jobs:
                 }'
         enable-AzPSSession: true 
 
+    - name: Pre-run | Validate datafactory artifacts
+      uses: Azure/data-factory-validate-action@v1.1.5
+      with:
+        path: './datafactory'
+
+    #- name: Pre-run | Disable triggers in workspace
+     # shell: pwsh
+     # run: |
+     #   .\scripts\datafactory\modifyTriggers.ps1 -WorkspaceName datafactory-cicd-seb -action disable
+
+    - name: Datafactory workspace deployment
+      uses: Azure/data-factory-deploy-action@v1.2.0
+      with:
+        dataFactoryName: datafactory-cicd-seb
+        resourceGroupName: datafactory-cicd
+        armTemplateFile: 
+        
+    #- name: Post-run | Enable triggers in workspace
+    #  shell: pwsh
+    #  run: |
+    #    .\scripts\datafactory\modifyTriggers.ps1 -WorkspaceName datafactory-cicd-seb -action enable
+    #  if: always()
