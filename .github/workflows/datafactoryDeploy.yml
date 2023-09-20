@@ -83,7 +83,7 @@ jobs:
       with:
         dataFactoryName: datafactory-cicd-seb
         resourceGroupName: datafactory-cicd
-        armTemplateFile: 
+        #armTemplateFile: 
         
     #- name: Post-run | Enable triggers in workspace
     #  shell: pwsh
