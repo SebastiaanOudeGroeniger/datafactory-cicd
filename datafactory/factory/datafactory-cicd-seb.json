@@ -1,0 +1,9 @@
+{
+	"name": "datafactory-cicd-seb",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "30bccfc3-bb4c-4d4b-821f-9e2c898c8f51",
+		"tenantId": "9a6fbae4-ff0a-4522-9564-de850dcba174"
+	}
+}
