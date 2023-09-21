@@ -122,4 +122,5 @@ jobs:
         dataFactoryName: datafactory-cicd-seb-prd
         resourceGroupName: datafactory-cicd
         armTemplateFile: "${{steps.download.outputs.download-path}}/ARMTemplateForFactory.json"
+        armTemplateParametersFile: parameters/prd/ARMTemplateParametersForFactory.json
                 
